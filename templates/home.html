@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block home_css %}
+<link rel="stylesheet" type="text/css" href=" {% static 'css/home_css.css' %}" />
+{% endblock %}
+
+<!-- {{ block.super}} --><!-- this will make all content from index.html appears all the time -->
+
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="home_content">
+
+        <h1>Welcome back to the NewPoll Home</h1>
+        {% if user.is_authenticated %}
+          <span style='margin-left:20%'> User {{ user.username }}</span>
+        {% endif%}
+        <h2>Your voice doesn't matter</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

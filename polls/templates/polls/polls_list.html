@@ -1,0 +1,127 @@
+{% extends 'index.html' %}
+{% load static %}
+
+<!-- {% block polls_detailes_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/polls_css.css' %}">
+{% endblock %} -->
+
+
+{% block content%}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 offset-sm-2">
+      <div class="poll_txt">
+
+        <h1 class="text-center" >NewPoll List page !!!</h1> <!-- this class is a Bootstrap thing -->
+
+        <!-- to print out the status of the current user -->
+        <!--
+         to see the all request available objects use :
+         for key in request.__dict__:
+              print(key)
+         you will see user among them
+        -->
+
+        <h2 class="text-center" > <!-- this class is a Bootstrap thing -->
+            {% if request.user.is_authenticated %}
+              Hey there {{ request.user }}
+            {% else %}
+              You are not logged in
+            {% endif %}
+        </h2>
+
+        {% if messages %} <!-- that's if messages in views.py def poll_vote became True -->
+          {% for message in messages %}
+          <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {{ message }}
+            <!-- all this coppied from Bottstarp -->
+            <button type="button" class='close' data-dismiss='alert' aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!-- above if statement to add a calss dynamically to the li with the message  -->
+          {% endfor %}
+        {% endif %}
+
+        <a href=" {% url 'polls:add' %}" class="btn btn-primary"
+           style='margin-bottom:5px;color:white;font-weight:bold'>
+          Add
+          <i class="fas fa-plus"></i> <!-- An icon from fontawesome -->
+        </a>
+
+        <!-- ordering buttons  -->
+        <div class="ordering" style='float: inline-end;'>
+          <a href="?text=True" class="btn btn-{% if 'text' in request.GET %}warning{% else %}primary{% endif %}"
+              style='margin-bottom:5px;color:white;font-weight:bold'>
+              Text
+          </a>
+          <a href="?date=True" class="btn btn-{% if 'date' in request.GET %}warning{% else %}primary{% endif %}"
+              style='margin-bottom:5px;color:white;font-weight:bold'>
+              Publish Date
+          </a>
+          <a href="?num_votes=True" class="btn btn-{% if 'num_votes' in request.GET %}warning{% else %}primary{% endif %}"
+              style='margin-bottom:5px;color:white;font-weight:bold'>
+              Num_Votes
+          </a>
+        </div>
+
+        <form class="form-inline my-2 my-lg-2">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                aria-label="Search" name='search' value="{{search_term}}">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+
+
+        <ul class="list-group">
+          <!-- poll_txt is a variable from views.py, def poll_view -->
+          {% for poll in poll_txt %}
+
+          <li class="list-group-item">
+            <a href="{% url 'polls:poll_details' poll_id=poll.id %}">{{ poll }}</a>
+            {% if request.user == poll.owner %} <!-- show it to logged in user
+                                                     only if he was the one who created it -->
+              <a href="{% url 'polls:edit_poll' poll_id=poll.id %}" class="float-right"><i class="fas fa-edit"></i></a>
+            {% endif %}
+          </li><!-- namespace first then name -->
+          <!-- poll_id gets the id of the clicked question and pass it to views.py  -->
+
+
+          <!-- {% for choice in poll.choices_set.all %}
+            <li>{{ choice.choice_text }}</li>
+            {% endfor %} -->
+
+            {% endfor %}
+        </ul>
+        <div class="pagination">
+          <span class='step-links'>
+            {% if poll_txt.has_previous %}
+            <a href="?page={{ poll_txt.previous_page_number }}{{params}}">&laquo; Previous</a>
+            <!-- @laquo; and &raquo; to add this sign >> << next to the word-->
+              <a href="?page=1{{params}}">First </a>
+            {% endif %}
+            <span class="current">
+              Page {{ poll_txt.number }} of {{ poll_txt.paginator.num_pages }}.
+            </span>
+            {% if poll_txt.has_next %}
+            <a href="?page={{ poll_txt.paginator.num_pages }}{{params}}">Last</a>
+              <a href="?page={{ poll_txt.next_page_number }}{{params}}">Next  &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- i can do it that way, and i have to copy and paste it into all spans above
+              IN the href next to ?page..... -->
+
+        <!-- {% for key, value in request.GET.items %}
+          {% if key != 'page' %}
+            {{key}} = {{value}}
+          {% endif %}
+        {% endfor %} -->
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'index.html'%}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <h1 class="text-center" style='margin:5% 0 5% 0'>
+        {% if edit_mode %}
+          Edit a Choice
+        {% else %}
+          Add a Choice
+        {% endif %}
+         using the form below !!
+      </h1>
+      <form action="" method="post"> <!-- action is empty which means we gonna Post to the same page we are in -->
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group"> <!-- this form group is for Bootstrap -->
+          {{ field.errors }}    <!-- will dispaly any errors if it exists -->
+          {{ field.label_tag }} <!-- will cleate a whole <label for=""></label> for us -->
+          {{ field }}           <!-- this creates the input place, just like <input type="text" name="" value=""> -->
+        </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" name="login" value="Submit">
+        {% if edit_mode %}
+          <a href="{% url 'polls:choice_delete' choice_id=choice.id %}" 
+             class="btn btn-danger">Delete <i class="far fa-trash-alt"></i>
+          </a>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

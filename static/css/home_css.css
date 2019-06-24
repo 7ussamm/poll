@@ -1,0 +1,14 @@
+
+body{
+  background-image: url('../img/img.jpg');
+  background-size: cover;
+}
+
+.home_content{
+  margin-top: 5%;
+  margin-left: -11%;
+  color: lightblue;
+}
+.home_content > h2{
+  padding-left: 10%
+}

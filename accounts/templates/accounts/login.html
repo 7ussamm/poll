@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container" style='margin-top:10%'>
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <!-- to dispaly the error message in the same page if the user didn't vote  -->
+      {% if messages %} <!-- that's if messages in views.py def poll_vote became True -->
+          <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}
+                {% if message.tags == 'error' %} style='color:red; margin-left:25%; font-weight:bold'
+                {% else %}
+                    style='color:green; margin-left:25%; font-weight:bold'
+                {% endif %}>
+              {{ message }}>
+            </li>
+            <!-- above if statement to add a class dynamically to the li with the message  -->
+            {% endfor %}
+          </ul>
+      {% endif %}
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" name="username"  placeholder="Enter Your Username">
+          <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter Your Password">
+          <!-- name='username' and name='password', the name was orginally id , we got it like this from
+          bootstrap, but we had to change it to name cuz we need it like this to be able
+          to send the data through it . id is good for CSS, but it means nothing when it comes
+          to POST data to the server , so we changed it to name='' -->
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      <p>Dont' have an account yet? <a href="{% url 'accounts:register' %}">Register now</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

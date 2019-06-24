@@ -1,0 +1,69 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <h1>Welcome to detailes page !!!</h1>
+
+      <!-- to dispaly the error message in the same page if the user didn't vote  -->
+      {% if messages %} <!-- that's if messages in views.py def poll_vote became True -->
+      <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}><h1>{{ message }}</h1></li>
+        <!-- above if statement to add a calss dynamically to the li with the message  -->
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <p>
+        {{ poll_choice }} <!-- poll_choice is a variable from views.py def poll_details -->
+        -
+        {{ poll_choice.num_votes }} <!-- for num_votes check class Poll in models.py -->
+        {% if poll_choice.num_votes > 1 %} votes {% else %} vote {% endif %}
+      </p>
+
+      <form action="{% url 'polls:vote' poll_choice.id %}" method="post">
+
+        <!-- this action="{% url ...." is for going into another page displaying statistics or number of voters
+          or anything else i want to display after the user hits VOTE button  -->
+
+          {% csrf_token %}
+          {% for choice in poll_choice.choices_set.all %}
+                <input  type="radio" name="choice"
+                        id='choice {{ forloop.counter }}'
+                        value="{{ choice.id }}" />
+
+          <!-- name='choice ==> just a name for now -->
+          <!-- id='choice.....' ==> count through every choice to know where to start next,
+            resault will be: choice 1, choice 2, choice 3, etc... -->
+            <!-- value='{{ choice.id }}' ==> get the choice id of every count,
+              every choice of the previous will be attached to it's id -->
+
+                <label for="choice {{ forloop.counter }}" > <!-- to make the label knows where to go to, in front of which radio -->
+                {{ choice.choice_text }}
+                </label>
+                <br>
+          {% endfor %}
+          <input type="submit" value="Vote"
+          class="btn btn-primary"
+          {% if not user_can_vote %}disabled{% endif %}
+          />
+      </form>
+      <br>
+      {% for choice_percentage in poll_choice.get_percentages %}
+        {{ choice_percentage.text }} - {{ choice_percentage.num_choice }} Choices
+        <div class="progress">
+          <div  class="progress-bar"
+                role="progressbar" style="width: {{ choice_percentage.percentage }}%;"
+                aria-valuenow="{{ choice_percentage.percentage }}"
+                aria-valuemin="0" aria-valuemax="100">{{ choice_percentage.percentage }}%
+          </div>
+        </div><br>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

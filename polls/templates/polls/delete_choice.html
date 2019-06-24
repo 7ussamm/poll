@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% block content %}
+{% csrf_token %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3 text-center">
+      <form action="" method="post">
+        <input type="submit" class="btn btn-danger" value="Confirm Deleting !!">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
